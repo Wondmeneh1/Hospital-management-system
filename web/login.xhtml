@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+    <title>Login - Hospital Management System</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(1deg, #7eea 0%, #1ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-container {
+            background: whitesmoke;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+        
+        /* Real Image Logo Styles */
+        .hospital-logo-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 4px solid #2c5aa0;
+            padding: 10px;
+            object-fit: contain;
+            margin-bottom: 1.5rem;
+            background: white;
+            box-shadow: 0 8px 25px rgba(44, 90, 160, 0.2);
+        }
+        
+        /* Fallback CSS Logo if image not available */
+        .css-medical-logo {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            border: 4px solid #2c5aa0;
+            margin: 0 auto 1.5rem auto;
+        }
+
+        .medical-cross {
+            position: relative;
+            width: 50px;
+            height: 50px;
+        }
+
+        .medical-cross::before,
+        .medical-cross::after {
+            content: '';
+            position: absolute;
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%);
+            border-radius: 3px;
+        }
+
+        .medical-cross::before {
+            width: 50px;
+            height: 14px;
+            top: 18px;
+            left: 0;
+        }
+
+        .medical-cross::after {
+            width: 14px;
+            height: 50px;
+            top: 0;
+            left: 18px;
+        }
+        
+        .hospital-name {
+            color: #2c5aa0;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hospital-subtitle {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .login-title {
+            color: #333;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        
+        .form-label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #2c5aa0;
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(44, 90, 160, 0.3);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .demo-credentials {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+            text-align: left;
+        }
+        
+        .demo-title {
+            color: #2c5aa0;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .demo-item {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .demo-role {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .demo-creds {
+            color: #666;
+        }
+        
+        .messages {
+            margin-bottom: 1rem;
+        }
+        
+        .message-success {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+            margin-bottom: 1rem;
+        }
+        
+        .message-error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #ef4444;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-text {
+            margin-top: 2rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 1rem;
+                padding: 2rem;
+            }
+            
+            .hospital-logo-img,
+            .css-medical-logo {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .medical-cross {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .medical-cross::before {
+                width: 40px;
+                height: 12px;
+                top: 14px;
+            }
+
+            .medical-cross::after {
+                width: 12px;
+                height: 40px;
+                left: 14px;
+            }
+            
+            .hospital-name {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <div class="login-container">
+        <!-- Hospital Header with Logo Options -->
+        
+        <!-- Option 1: Real Image Logo (uncomment when you have logo image) -->
+      <h:graphicImage value="/resources/images/hospital-logo.png" 
+                           alt="Tibebe Giyon Hospital Logo" 
+                           styleClass="hospital-logo-img"/> 
+        
+        
+  
+        
+        <h1 class="hospital-name">Tibebe Ghion Specialized Hospital</h1>
+        <b>   <p class="hospital-subtitle"> Management System</p></b>
+        
+        <h2 class="login-title">Staff Login</h2>
+        
+        <!-- Messages -->
+        <div class="messages">
+            <h:messages styleClass="message-success" 
+                       infoClass="message-success"
+                       errorClass="message-error"/>
+        </div>
+        
+        <!-- Login Form -->
+        <h:form>
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <h:inputText value="#{loginBean.username}" 
+                            styleClass="form-input"
+                            required="true"
+                            requiredMessage="Username is required"/>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <h:inputSecret value="#{loginBean.password}" 
+                              styleClass="form-input"
+                              required="true"
+                              requiredMessage="Password is required"/>
+            </div>
+            
+            <h:commandButton value="🔐 Login" 
+                            action="#{loginBean.login}"
+                            styleClass="login-btn"/>
+        </h:form>
+       
+        
+        <p class="footer-text">
+         3rd year Data Science Student 2026
+        </p>
+    </div>
+</h:body>
+</html>

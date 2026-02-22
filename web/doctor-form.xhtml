@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <h:head>
+        <title>Doctor Management - Tibebe Giyon Specialized Hospital</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f5f5f5;
+            }
+
+            .header {
+                background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%);
+                color: white;
+                padding: 2rem 0;
+                text-align: center;
+            }
+
+            .header h1 {
+                margin: 0;
+                font-size: 2.5rem;
+            }
+
+            .header a {
+                color: white;
+                text-decoration: none;
+            }
+
+            .container {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 2rem;
+            }
+
+            .section {
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+                padding: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .section-header {
+                color: #1e3a8a;
+                margin-bottom: 1.5rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 2px solid #e5e7eb;
+            }
+
+            .form-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .form-group label {
+                font-weight: 600;
+                color: #374151;
+                margin-bottom: 0.5rem;
+            }
+
+            .form-control {
+                padding: 0.75rem;
+                border: 2px solid #e5e7eb;
+                border-radius: 8px;
+                font-size: 1rem;
+            }
+
+            .form-control:focus {
+                outline: none;
+                border-color: #2c5aa0;
+            }
+
+            .required:after {
+                content: " *";
+                color: #ef4444;
+            }
+
+            .btn {
+                padding: 0.75rem 1.5rem;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 1rem;
+                color: white;
+                margin: 0.25rem;
+            }
+
+            .btn-success { background: #10b981; }
+            .btn-warning { background: #f59e0b; }
+            .btn-danger { background: #ef4444; }
+            .btn-secondary { background: #6b7280; }
+            .btn-primary { background: #2c5aa0; }
+
+            .btn:hover {
+                opacity: 0.9;
+                transform: translateY(-1px);
+            }
+
+            .form-actions {
+                margin-top: 1.5rem;
+                padding-top: 1rem;
+                border-top: 1px solid #e5e7eb;
+                text-align: right;
+            }
+
+            .data-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 1rem;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 1rem;
+                text-align: left;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .data-table th {
+                background: #f8f9fa;
+                font-weight: 600;
+                color: #374151;
+            }
+
+            .data-table tr:hover {
+                background: #f9fafb;
+            }
+
+            .specialization {
+                background: #059669;
+                color: white;
+                padding: 0.25rem 0.5rem;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 0.875rem;
+            }
+
+            .message {
+                padding: 1rem;
+                margin: 1rem 0;
+                border-radius: 8px;
+                font-weight: 600;
+            }
+
+            .message-success {
+                background: #d1fae5;
+                color: #065f46;
+                border: 1px solid #10b981;
+            }
+
+            .message-error {
+                background: #fee2e2;
+                color: #991b1b;
+                border: 1px solid #ef4444;
+            }
+
+            .stats-bar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: #f8f9fa;
+                padding: 1rem;
+                border-radius: 8px;
+                margin-bottom: 1rem;
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 3rem;
+                color: #6b7280;
+            }
+
+            @media (max-width: 768px) {
+                .form-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .form-actions {
+                    text-align: center;
+                }
+
+                .btn {
+                    width: 100%;
+                    margin: 0.25rem 0;
+                }
+
+                .stats-bar {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <div class="header">
+            <h1>👨‍⚕️ Doctor Management</h1>
+            <p><a href="index.xhtml">← Back to Dashboard</a></p>
+        </div>
+
+        <div class="container">
+            <!-- Display Messages -->
+            <h:messages styleClass="message message-success" 
+                        infoClass="message-success"
+                        errorClass="message message-error"/>
+
+            <!-- Doctor Form Section -->
+            <div class="section">
+                <h2 class="section-header">➕ Add/Edit Doctor</h2>
+
+                <h:form id="doctorForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="required">First Name:</label>
+                            <h:inputText value="#{doctorBean.doctor.firstName}" 
+                                         styleClass="form-control"
+                                         required="true"
+                                         requiredMessage="First name is required"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required">Last Name:</label>
+                            <h:inputText value="#{doctorBean.doctor.lastName}" 
+                                         styleClass="form-control"
+                                         required="true"
+                                         requiredMessage="Last name is required"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <h:inputText value="#{doctorBean.doctor.email}" 
+                                         styleClass="form-control"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Phone:</label>
+                            <h:inputText value="#{doctorBean.doctor.phone}" 
+                                         styleClass="form-control"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Date of Birth:</label>
+                            <h:inputText value="#{doctorBean.doctor.dateOfBirth}" 
+                                         styleClass="form-control"
+                                         title="Enter date as DD/MM/YYYY (e.g., 25/12/1980)">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:inputText>
+                            <small style="color:#666;font-size:0.8rem;">Format: DD/MM/YYYY</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Gender:</label>
+                            <h:selectOneMenu value="#{doctorBean.doctor.gender}" 
+                                             styleClass="form-control">
+                                <f:selectItem itemLabel="Select Gender" itemValue=""/>
+                                <f:selectItem itemLabel="Male" itemValue="Male"/>
+                                <f:selectItem itemLabel="Female" itemValue="Female"/>
+                                <f:selectItem itemLabel="Other" itemValue="Other"/>
+                            </h:selectOneMenu>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required">Specialization:</label>
+                            <h:selectOneMenu value="#{doctorBean.doctor.specialization}" 
+                                             styleClass="form-control"
+                                             required="true"
+                                             requiredMessage="Specialization is required">
+                                <f:selectItem itemLabel="Select Specialization" itemValue=""/>
+                                <f:selectItem itemLabel="Cardiology" itemValue="Cardiology"/>
+                                <f:selectItem itemLabel="Neurology" itemValue="Neurology"/>
+                                <f:selectItem itemLabel="Pediatrics" itemValue="Pediatrics"/>
+                                <f:selectItem itemLabel="Orthopedics" itemValue="Orthopedics"/>
+                                <f:selectItem itemLabel="Dermatology" itemValue="Dermatology"/>
+                                <f:selectItem itemLabel="General Medicine" itemValue="General Medicine"/>
+                                <f:selectItem itemLabel="Surgery" itemValue="Surgery"/>
+                                <f:selectItem itemLabel="Emergency Medicine" itemValue="Emergency Medicine"/>
+                            </h:selectOneMenu>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Department:</label>
+                            <h:selectOneMenu value="#{doctorBean.doctor.departmentId}" 
+                                             styleClass="form-control">
+                                <f:selectItem itemLabel="Select Department" itemValue=""/>
+                                <f:selectItem itemLabel="Emergency" itemValue="1"/>
+                                <f:selectItem itemLabel="Cardiology" itemValue="2"/>
+                                <f:selectItem itemLabel="Pediatrics" itemValue="3"/>
+                                <f:selectItem itemLabel="Surgery" itemValue="4"/>
+                            </h:selectOneMenu>
+                        </div>
+
+                        <div class="form-group">
+                            <label>License Number:</label>
+                            <h:inputText value="#{doctorBean.doctor.licenseNumber}" 
+                                         styleClass="form-control"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Years of Experience:</label>
+                            <h:inputText value="#{doctorBean.doctor.yearsOfExperience}" 
+                                         styleClass="form-control"/>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label>Status:</label>
+                            <h:selectOneMenu value="#{doctorBean.doctor.status}" 
+                                             styleClass="form-control">
+                                <f:selectItem itemLabel="Active" itemValue="Active"/>
+                                <f:selectItem itemLabel="Inactive" itemValue="Inactive"/>
+                                <f:selectItem itemLabel="On Leave" itemValue="On Leave"/>
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <h:commandButton value="💾 Save Doctor" 
+                                         action="#{doctorBean.saveDoctor}" 
+                                         styleClass="btn btn-success"/>
+                        <h:commandButton value="🔄 Clear Form" 
+                                         action="#{doctorBean.createNewDoctor()}" 
+                                         styleClass="btn btn-secondary"/>
+                        <div class="stats-bar">
+                            <div>
+                                <strong>Total Doctors: #{doctorBean.doctors.size()}</strong>
+                            </div>
+                            <h:form style="margin: 0;">
+                                <h:commandButton value="🔄 Refresh List" 
+                                                 action="#{doctorBean.loadDoctors}" 
+                                                 styleClass="btn btn-primary"/>
+                            </h:form>
+                        </div>
+                    </div>
+                </h:form>
+            </div>
+
+        </div>
+    </h:body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:head>
+        <title>Appointment Form - Hospital Management System</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f5f5f5;
+            }
+
+            .header {
+                background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%);
+                color: white;
+                padding: 2rem 0;
+                text-align: center;
+            }
+
+            .header h1 {
+                margin: 0;
+                font-size: 2.5rem;
+            }
+
+            .header a {
+                color: white;
+                text-decoration: none;
+            }
+
+            .container {
+                max-width: 800px;
+                margin: 2rem auto;
+                padding: 2rem;
+            }
+
+            .form-container {
+                background: white;
+                padding: 2rem;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            }
+
+            .form-container h2 {
+                color: #1e3a8a;
+                margin-top: 0;
+                margin-bottom: 2rem;
+                text-align: center;
+            }
+
+            .form-group {
+                margin-bottom: 1.5rem;
+            }
+
+            .form-group label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 0.5rem;
+                color: #374151;
+            }
+
+            .required:after {
+                content: " *";
+                color: red;
+            }
+
+            .form-control {
+                width: 100%;
+                padding: 0.75rem;
+                border: 2px solid #e5e7eb;
+                border-radius: 8px;
+                font-size: 1rem;
+                box-sizing: border-box;
+            }
+
+            .form-control:focus {
+                outline: none;
+                border-color: #2c5aa0;
+                box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+            }
+
+            .form-row {
+                display: flex;
+                gap: 1rem;
+            }
+
+            .form-row .form-group {
+                flex: 1;
+            }
+
+            .btn {
+                padding: 1rem 2rem;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 1rem;
+                color: white;
+                transition: all 0.3s;
+                margin-right: 1rem;
+            }
+
+            .btn-primary {
+                background: #2c5aa0;
+            }
+
+            .btn-secondary {
+                background: #6b7280;
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                opacity: 0.9;
+            }
+
+            .form-actions {
+                margin-top: 2rem;
+                text-align: center;
+            }
+
+            .error-message {
+                color: #ef4444;
+                font-size: 0.875rem;
+                margin-top: 0.25rem;
+            }
+
+            .help-text {
+                font-size: 0.875rem;
+                color: #6b7280;
+                margin-top: 0.25rem;
+            }
+
+            @media (max-width: 768px) {
+                .form-row {
+                    flex-direction: column;
+                }
+
+                .container {
+                    padding: 1rem;
+                }
+
+                .form-container {
+                    padding: 1.5rem;
+                }
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <div class="header">
+            <h1>📅 Appointment Form</h1>
+            <p><a href="appointment.xhtml">← Back to Appointments</a></p>
+        </div>
+
+        <div class="container">
+            <div class="form-container">
+                <h2>
+                    <h:outputText value="Edit Appointment" rendered="#{appointmentBean.appointment.id != null}"/>
+                    <h:outputText value="New Appointment" rendered="#{appointmentBean.appointment.id == null}"/>
+                </h2>
+
+                <!-- Display Messages -->
+                <h:messages styleClass="ui-messages ui-messages-info" 
+                            infoClass="ui-messages-info"
+                            errorClass="ui-messages ui-messages-error"/>
+
+                <h:form>
+                    <!-- Patient Selection -->
+                    <div class="form-group">
+                        <label for="patient" class="required">Patient:</label>
+                        <h:selectOneMenu id="patient" 
+                                         value="#{appointmentBean.appointment.patientId}" 
+                                         styleClass="form-control"
+                                         required="true"
+                                         requiredMessage="Patient is required">
+                            <f:selectItem itemValue="" itemLabel="-- Select Patient --"/>
+                            <f:selectItems value="#{appointmentBean.patients}" 
+                                           var="patient" 
+                                           itemValue="#{patient.id}" 
+                                           itemLabel="#{patient.firstName} #{patient.lastName}"/>
+                        </h:selectOneMenu>
+                        <h:message for="patient" styleClass="error-message"/>
+                        <div class="help-text">Select the patient for this appointment</div>
+                    </div>
+
+                    <!-- Doctor Selection -->
+                    <div class="form-group">
+                        <label for="doctor" class="required">Doctor:</label>
+                        <h:selectOneMenu id="doctor" 
+                                         value="#{appointmentBean.appointment.doctorId}" 
+                                         styleClass="form-control"
+                                         required="true"
+                                         requiredMessage="Doctor is required">
+                            <f:selectItem itemValue="" itemLabel="-- Select Doctor --"/>
+                            <f:selectItems value="#{appointmentBean.doctors}" 
+                                           var="doctor" 
+                                           itemValue="#{doctor.id}" 
+                                           itemLabel="Dr. #{doctor.firstName} #{doctor.lastName} - #{doctor.specialization}"/>
+                        </h:selectOneMenu>
+                        <h:message for="doctor" styleClass="error-message"/>
+                        <div class="help-text">Select the doctor for this appointment</div>
+                    </div>
+
+                    <!-- Appointment Date and Time -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="appointmentDatetime" class="required">Appointment Date &amp; Time:</label>
+                            <h:inputText id="appointmentDatetime" 
+                                         value="#{appointmentBean.appointment.appointmentDatetime}" 
+                                         styleClass="form-control"
+                                         required="true"
+                                         requiredMessage="Appointment date and time is required">
+                                <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+                            </h:inputText>
+                            <h:message for="appointmentDatetime" styleClass="error-message"/>
+                            <div class="help-text">Format: YYYY-MM-DD HH:MM (e.g., 2026-1-14 14:30)</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="duration" class="required">Duration (minutes):</label>
+                            <h:inputText id="duration" 
+                                         value="#{appointmentBean.appointment.duration}" 
+                                         styleClass="form-control"
+                                         required="true"
+                                         requiredMessage="Duration is required">
+                                <f:validateLongRange minimum="15" maximum="240"/>
+                            </h:inputText>
+                            <h:message for="duration" styleClass="error-message"/>
+                            <div class="help-text">Duration in minutes (15-240)</div>
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="form-group">
+                        <label for="status" class="required">Status:</label>
+                        <h:selectOneMenu id="status" 
+                                         value="#{appointmentBean.appointment.status}" 
+                                         styleClass="form-control"
+                                         required="true"
+                                         requiredMessage="Status is required">
+                            <f:selectItems value="#{appointmentBean.statusOptions}"/>
+                        </h:selectOneMenu>
+                        <h:message for="status" styleClass="error-message"/>
+                        <div class="help-text">Current status of the appointment</div>
+                    </div>
+
+                    <!-- Reason -->
+                    <div class="form-group">
+                        <label for="reason">Reason for Visit:</label>
+                        <h:inputTextarea id="reason" 
+                                         value="#{appointmentBean.appointment.reason}" 
+                                         styleClass="form-control"
+                                         rows="3"/>
+                        <h:message for="reason" styleClass="error-message"/>
+                        <div class="help-text">Brief description of the reason for this appointment</div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="form-group">
+                        <label for="notes">Notes:</label>
+                        <h:inputTextarea id="notes" 
+                                         value="#{appointmentBean.appointment.notes}" 
+                                         styleClass="form-control"
+                                         rows="4"/>
+                        <h:message for="notes" styleClass="error-message"/>
+                        <div class="help-text">Additional notes or special instructions</div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <h:commandButton value="💾 Save Appointment" 
+                                         action="#{appointmentBean.saveAppointment}"
+                                         styleClass="btn btn-primary"/>
+                        <h:commandButton value="❌ Cancel" 
+                                         action="appointment?faces-redirect=true"
+                                         styleClass="btn btn-secondary"
+                                         immediate="true"/>
+                    </div>
+                </h:form>
+            </div>
+        </div>
+    </h:body>
+</html>
